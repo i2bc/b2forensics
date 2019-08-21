@@ -1,0 +1,1 @@
+Store in this directory the reference genomes of the species of interest.
