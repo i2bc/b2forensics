@@ -10,30 +10,30 @@ Gilles Vergnaud (<gilles.vergnaud@u-psud.fr>)
 
 * Kraken2
  
-'''bash
+```bash
 # Clone or download files
 git clone https://github.com/DerrickWood/kraken2
-'''
+```
 
-'''bash
+```bash
 # launch install script 
 ./install_kraken2.sh $KRAKEN2_DIR
-'''
+```
 More details in the [manual of Kraken2].
 
 * Conda
 
-'''bash
+```bash
 # Get miniconda 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh;
 ./Miniconda3-latest-Linux-x86_64.sh
-'''
+```
 
 * b2forensics environment and scripts
-'''bash
+```bash
 # Clone or download files
 git clone https://github.com/i2bc/b2forensics
-'''
+```
 
 ### How to use
 
