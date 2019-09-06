@@ -3,6 +3,7 @@
 **Contacts**
 
 Gilles Vergnaud (<gilles.vergnaud@u-psud.fr>)
+Jean-Philippe Vernadet (<jean-philippe.vernadet@laposte.net>)
 
 ## Installation
 
