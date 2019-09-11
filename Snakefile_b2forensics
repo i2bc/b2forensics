@@ -17,6 +17,7 @@ rule all:
 		expand("reference_genomes/{strain}_genome.fa.amb",strain=strains),
 		expand("reference_genomes/{strain}_genome.fa.fai",strain=strains),		
 		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
+		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
 		#expand("b2forensics_results/alignment_fastq/{sample}_{strain}_{strand}.fq.gz",sample=SAMPLES,strain=strains,strand=strands),
 		#expand("b2forensics_results/alignment_reads_id/{sample}_alignment_paired_reads_id_{strain}.txt",sample=SAMPLES,strain=strains),
 		expand("b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered2.txt",strain=strains,strand=strands,sample=SAMPLES),
@@ -96,6 +97,21 @@ rule kraken2_paired:
 	threads:16
 	shell:
 		"kraken2 --db {input.kdb} --gzip-compressed --paired --threads {threads} --output {output} {input.fv} {input.rv}"
+
+#krona representation of kraken results
+rule krona:
+	input:
+		"b2forensics_results/kraken_results/{sample}_cdb_paired.txt"
+	output:
+		"b2forensics_results/krona_results/{sample}.html"
+	conda:
+		"envs/genomic.yaml"
+	threads:1
+	params:
+		mem=60,
+		jobname="krona.{sample}"
+	shell:
+		"ktImportTaxonomy {input} -o {output} -q 2 -t 3 -k "
 
 #get reads_id for reads (paired end) identified as species of interest
 rule get_paired_reads_id:
