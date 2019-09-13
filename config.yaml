@@ -1,0 +1,17 @@
+# path to your fastq files
+data_path:
+
+# path to your kraken database
+kraken_dp_path: 
+
+# path to your local blast database
+blast_db_path: 
+
+# list of the name of your samples
+samples:
+
+# list of the name of your taxon (ex: strains, species, genus...)
+strains:
+
+
+  
