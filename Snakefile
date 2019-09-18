@@ -7,13 +7,9 @@ configfile: "config.yaml"
 DATA_PATH=config['data_path']
 KRAKEN_DB_PATH=config['kraken_dp_path']
 BLAST_DB_PATH=config['blast_db_path']
-
 SAMPLES=config['samples']
-
 STRAINS=config["strains"]
-
-tools=["blast"]
-strands=["R1","R2"]
+STRANDS=["R1","R2"]
 
 rule all:
 	input:
@@ -21,25 +17,11 @@ rule all:
 		expand("reference_genomes/{strain}_genome.fa.fai",strain=STRAINS),		
 		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
 		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
-		#expand("b2forensics_results/alignment_fastq/{sample}_{strain}_{strand}.fq.gz",sample=SAMPLES,strain=STRAINS,strand=strands),
-		#expand("b2forensics_results/alignment_reads_id/{sample}_alignment_paired_reads_id_{strain}.txt",sample=SAMPLES,strain=STRAINS),
-		expand("b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered2.txt",strain=STRAINS,strand=strands,sample=SAMPLES),
+		expand("b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered2.txt",strain=STRAINS,strand=STRANDS,sample=SAMPLES),
 		expand("b2forensics_results/blast_reads_id/{sample}_{strain}_blast_output_uniq.txt",strain=STRAINS,sample=SAMPLES)
-		#expand("b2forensics_results/kraken_results/{sample}_cdb_paired.gz",sample=SAMPLES),
-		#expand("b2forensics_results/blast_fastq/{sample}_{strain}_{strand}.fq.gz",sample=SAMPLES,strain=STRAINS,strand=["R1","R2"]),
-		#expand("b2forensics_results/trDNA_depleted/{tool}_alignment_{strain}/{sample}_aln_paired_trDNA_depleted_{strain}.sorted.bam.bai",tool=tools,strain=STRAINS,sample=SAMPLES),
-		#expand("b2forensics_results/blast_reads_id/{sample}_blast_reads_id_merged.txt",sample=SAMPLES),
-		#expand("b2forensics_results/{tool}_alignment_{strain}/{sample}_aln_properly_paired_{strain}.sorted.bam",tool=tools,strain=STRAINS,sample=SAMPLES),
-		#expand("b2forensics_results/{tool}_alignment_{strain}/{sample}_aln_control_merged_{strain}.sorted.bam.bai",tool=["blast"],strain=STRAINS,sample=SAMPLES),
-		#expand("b2forensics_results/{tool}_alignment_{strain}/{sample}_aln_control_all_single_{strain}.sorted.bam.bai",tool=["kraken","blast"],strain=STRAINS,sample=SAMPLES),
-		#expand("b2forensics_results/{tool}_alignment_{strain}/{sample}_aln_control_properly_paired_{strain}.sorted.bam.bai",tool=["kraken","blast"],strain=STRAINS,sample=SAMPLES),
-		#expand("fastqc/untrimmed/{sample}_{strand}_fastqc.html",strand=["R1","R2"],sample=SAMPLES),
-		#expand("fastqc/trimmed/{sample}_{strand}_fastqc.html",strand=["R1","R2","single"],sample=SAMPLES),
-		#expand("b2forensics_results/krona_results/{sample}_cdb_paired.html",sample=SAMPLES),
-		#expand("b2forensics_results/retained_reads/{tool}_alignment/{sample}_retained_{strand}_final_reads_{strain}_paired.fq.gz",tool=tools,sample=SAMPLES,strain=STRAINS,strand=strands)
-		#expand("reference_genomes/{strain}_genome.fa.amb",strain=STRAINS)
 
-#index of ref fasta and silva sequences (subunit ribosomal RNA)
+
+# index of ref fasta and silva sequences (subunit ribosomal RNA)
 rule bwa_index_ref:
 	input:
 		"reference_genomes/{strain}_genome.fa"
@@ -58,7 +40,7 @@ rule bwa_index_ref:
 	shell :
 		"bwa index {input}"
 
-#index of ref fasta with samtools:
+# index of ref fasta with samtools:
 rule samtools_index_ref:
 	input:
 		"reference_genomes/{strain}_genome.fa"
@@ -71,7 +53,7 @@ rule samtools_index_ref:
 	shell :
 		"samtools faidx {input}"		
 
-#index of silva sequences (subunit ribosomal RNA)
+# index of silva sequences (subunit ribosomal RNA)
 rule bwa_index_silva:
 	input:
 		"tRNA_sequences/tRNA_bacteria_with_silva-128_lsu_ssu.fa"
@@ -89,7 +71,7 @@ rule bwa_index_silva:
 		"bwa index {input}"
 
 
-#kraken paired analyse with custom database
+# kraken paired analyse with custom database
 rule kraken2_paired:
 	input:
 		kdb=KRAKEN_DB_PATH,
@@ -101,7 +83,7 @@ rule kraken2_paired:
 	shell:
 		"kraken2 --db {input.kdb} --gzip-compressed --paired --threads {threads} --output {output} {input.fv} {input.rv}"
 
-#krona representation of kraken results
+# krona representation of kraken results
 rule krona:
 	input:
 		"b2forensics_results/kraken_results/{sample}_cdb_paired.txt"
@@ -116,7 +98,7 @@ rule krona:
 	shell:
 		"ktImportTaxonomy {input} -o {output} -q 2 -t 3 -k "
 
-#get reads_id for reads (paired end) identified as species of interest
+# get reads_id for reads (paired end) identified as species of interest
 rule get_paired_reads_id:
 	input:
 		tax="taxonomy_files/taxonomy_tree_{strain}.txt",
@@ -127,7 +109,7 @@ rule get_paired_reads_id:
 	shell:
 		"scripts/kraken_filter.py {input.tax} {input.kraken} {output}"
 
-#prepare files for seqtk:
+# prepare files for seqtk:
 rule prepare_seqtk:
 	input:
 		"b2forensics_results/kraken_reads_id/{sample}_kraken_paired_{strain}.txt"
@@ -138,7 +120,7 @@ rule prepare_seqtk:
 		"cut -f2 {input} | sort > {output}"
 
 
-#get fastq from paired reads id
+# get fastq from paired reads id
 rule subseq_paired:
 	input:
 		reads=join(DATA_PATH,"{sample}_{strand}.fastq.gz"),
@@ -149,7 +131,7 @@ rule subseq_paired:
 	shell:
 		"seqtk subseq {input.reads} {input.reads_id} > {output}"
 
-#compression of fastq
+# compression of fastq
 rule compression_into_gzip3:
 	input: 
 		"b2forensics_results/kraken_fastq/{sample}.fq"
@@ -159,7 +141,7 @@ rule compression_into_gzip3:
 	shell:
 		"pigz -9 -p {threads} {input}"
 
-#####rDNA_depletion and tRNA depletion 
+# rDNA_depletion and tRNA depletion 
 
 rule bwa_map_trDNA:
 	input :
@@ -189,8 +171,7 @@ rule extract_trDNA_depleted_reads:
 	shell:
 		"samtools bam2fq -@ {threads} -f4 {input} -1 {output.ffastq} -2 {output.rfastq} -s {output.sfastq} -n -c 9"
 
-###alignment
-#mapping of paired-end reads (both mates identified as species of interest)
+# mapping of paired-end reads (both mates identified as species of interest)
 rule bwa_map_ref:
 	input :
 		ref="reference_genomes/{strain}_genome.fa",
@@ -231,7 +212,7 @@ rule index:
 	shell:
 		"samtools index {input}"
 
-#get reads_id for reads (paired end) identified as species of interest
+# get reads_id for reads (paired end) identified as species of interest
 rule get_paired_reads_id2:
 	input:
 		"b2forensics_results/trDNA_depleted/blast_alignment_{strain}/{sample}_aln_paired_trDNA_depleted_{strain}.sorted.bam"
@@ -241,18 +222,18 @@ rule get_paired_reads_id2:
 	shell:
 		"samtools view -@ {threads} -q 60 -f2 {input} | egrep 'NC_005707|NC_007322|NC_007323|NZ_CP018094|NZ_CP015151|NZ_CP015152|NZ_CP015153|NZ_CP015154|NZ_CP015155|NZ_CP015156|NC_003131|NC_003132|NC_003134' -v| grep NM:i:[0-2] -w | cut -f1 | sort | uniq -d > {output} || true" #on ne garde pas les reads avec plus d'un mismatch | grep NM:i:[2-9] -v  
 
-#get fastq from paired reads id
+# get fastq from paired reads id
 rule subseq_paired2:
 	input:
 		reads="b2forensics_results/kraken_fastq/{sample}_{strain}_{strand}.fq.gz",
 		reads_id="b2forensics_results/alignment_reads_id/{sample}_alignment_paired_reads_id_{strain}.txt"
 	output:
-		"b2forensics_results/alignment_fastq/{sample}_{strain}_{strand,(R1|R2)}.fq"
+		"b2forensics_results/alignment_fastq/{sample}_{strain}_{strand}.fq"
 	threads:1
 	shell:
 		"seqtk subseq {input.reads} {input.reads_id} > {output}"
 
-#compression of fastq
+# compression of fastq
 rule compression_into_gzip4:
 	input: 
 		"b2forensics_results/alignment_fastq/{sample}.fq"
@@ -272,7 +253,7 @@ rule fq_to_fa:
 	shell:
 		"seqtk seq -A {input} > {output}"
 
-#megablast on fasta (reads identified as species of interest by kraken)
+# megablast on fasta (reads identified as species of interest by kraken)
 rule megablast:
 	input:
 		"b2forensics_results/kraken_fasta/{sample}_{strand}.fa"
@@ -283,22 +264,21 @@ rule megablast:
 		"blastn -db " + BLAST_DB_PATH + " -num_threads {threads} -max_target_seqs 100 -query {input} -out {output} -perc_identity 95 -qcov_hsp_perc 90 "
 		"-outfmt '6 qseqid sacc stitle staxid score bitscore evalue pident nident mismatch qcovhsp'"
 
-#filter blast output to keep best bitscore results with a least a bitscore of 50 and at most 2 SNP
+# filter blast output to keep best bitscore results with a least a bitscore of 50 and at most 2 SNP
 rule script_blast_output:
 	input:
 		"b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}.txt"
 	output:
-		test1="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered1.txt",
-		test2="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered2.txt"
+		"b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered.txt"
 	threads:1
 	shell:
-		"python2 scripts/blast_output_filter_final.py {input} {output.test1} {output.test2} {wildcards.strain}"
+		"python2 scripts/blast_filter.py {input} {output} {wildcards.strain}"
 
-#extract reads id identified as species of interest from blast results
+# extract reads id identified as species of interest from blast results
 rule blast_reads_id:
 	input:
-		r1="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_R1_filtered2.txt",
-		r2="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_R2_filtered2.txt"
+		r1="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_R1_filtered.txt",
+		r2="b2forensics_results/megablast_results/{sample}_{strain}_blast_output_R2_filtered.txt"
 	output:
 		"b2forensics_results/blast_reads_id/{sample}_{strain}_blast_output_uniq.txt"
 	threads:1
