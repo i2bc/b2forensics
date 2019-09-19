@@ -12,12 +12,12 @@
 * Kraken2
  
 ```bash
-# Clone or download files
+# clone or download files
 git clone https://github.com/DerrickWood/kraken2.git
 ```
 
 ```bash
-# Launch install script 
+# launch install script 
 ./install_kraken2.sh $KRAKEN2_DIR
 ```
 More details in the [manual of Kraken2].
@@ -25,14 +25,14 @@ More details in the [manual of Kraken2].
 * Conda
 
 ```bash
-# Get miniconda 
+# get miniconda 
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh;
 ./Miniconda3-latest-Linux-x86_64.sh
 ```
 
 * b2forensics environment and scripts
 ```bash
-# Clone or download files
+# clone or download files
 git clone https://github.com/i2bc/b2forensics.git
 ```
 
