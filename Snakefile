@@ -17,7 +17,7 @@ rule all:
 		expand("reference_genomes/{strain}_genome.fa.fai",strain=STRAINS),		
 		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
 		expand("b2forensics_results/kraken_results/{sample}_cdb_paired.txt",sample=SAMPLES),
-		expand("b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered2.txt",strain=STRAINS,strand=STRANDS,sample=SAMPLES),
+		expand("b2forensics_results/megablast_results/{sample}_{strain}_blast_output_{strand}_filtered.txt",strain=STRAINS,strand=STRANDS,sample=SAMPLES),
 		expand("b2forensics_results/blast_reads_id/{sample}_{strain}_blast_output_uniq.txt",strain=STRAINS,sample=SAMPLES)
 
 
