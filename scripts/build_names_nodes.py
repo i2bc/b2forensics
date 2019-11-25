@@ -27,7 +27,7 @@ with open(output_nodes_dmp, mode='w') as nodes_file, open(output_names_dmp, mode
 	for node in t.traverse("levelorder"):
 		for i in node.children:
 			nodes_writer.writerow([i.tax_id,'|',node.tax_id,'|','no rank','|','|','0','|','1','|','11','|','1','|','0','|','1','|','1','|','|','|','|','1','|','0','|','1','|'])
-		names_writer.writerow([node.tax_id,'|',node.name,'|','|','scientific name','|'])
+		names_writer.writerow([node.tax_id,'|',node.name,'|','\t','|','scientific name','|'])
 
 
 #print (t.get_ascii(show_internal=True))
