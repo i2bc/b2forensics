@@ -9,6 +9,7 @@ dependencies:
   - bowtie2=2.3.4.3=py35h2d50403_0
   - bwa=0.7.17=h84994c4_5
   - bzip2=1.0.8=h516909a_0
+  - ete3=3.1.1
   - fastqc=0.11.6=2
   - krona=2.7.1=pl526_0
   - perl=5.26.2=h516909a_1006
