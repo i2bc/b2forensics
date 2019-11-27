@@ -36,6 +36,9 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh;
 git clone https://github.com/i2bc/b2forensics.git
 ```
 
+
+
+
 ### Database/Data
 
 The first part of the pipeline uses a Kraken2 custom or standard database, a file with tRNA sequences and subunit ribosomal RNA sequences, and files of reference genomes of the species of interest.  
@@ -111,6 +114,40 @@ done
 kraken2-build --build --db kraken2_db
 ```
 * fill in the different paths in the [config file]
+
+## Results/output files
+
+### Structure of the output directory
+
+
+```
+├── b2forensics_results
+    ├── alignment_fastq
+    |	├── {sample}_{strain}_R1.fq.gz 	
+    |	├── {sample}_{strain}_R2.fq.gz
+    ├── alignment_reads_id 
+    |	├── {sample}_alignment_paired_reads_id_{strain}.txt
+    ├── blast_reads_id
+    |	├── {sample}_{strain}_blast_output_uniq.txt
+    ├── kraken_fasta
+    |	├── {sample}_{strain}_R1.fa
+    |	├── {sample}_{strain}_R2.fa
+    ├── kraken_fastq
+    |	├── {sample}_{strain}_R1.fq.gz 	
+    |	├── {sample}_{strain}_R2.fq.gz
+    ├── kraken_reads_id
+    |	├── {sample}_kraken_paired_reads_id_{strain}.txt
+    ├── kraken_results
+    |	├── {sample}_cdb_paired.txt 
+    ├── megablast_results
+    |	├── {sample}_{strain}_blast_output_R1.txt
+    |	├── {sample}_{strain}_blast_output_R2.txt
+    |	├── {sample}_{strain}_blast_output_R1_filtered.txt
+    |	├── {sample}_{strain}_blast_output_R2_filtered.txt
+    ├── trDNA_depleted
+    	├── blast_alignment_{strain}
+    		├── {sample}_aln_paired_trDNA_depleted_{strain}.sorted.bam
+```
 
 
 [manual of Kraken2]: https://github.com/DerrickWood/kraken2/blob/master/docs/MANUAL.markdown
