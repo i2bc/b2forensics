@@ -3,7 +3,7 @@
 import sys, csv
 
 #script to filter kraken output 
-#only keep results with a taxid include in the list_id_strain (taxonomy_files)
+#only keep results with a taxid include in the list_id_strain (in taxonomy_files)
 
 list_id_strain = [taxid.rstrip('\n') for taxid in open(sys.argv[1],'r')]
 reader=csv.reader(open(sys.argv[2],"r"),delimiter="\t")
