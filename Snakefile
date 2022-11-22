@@ -21,7 +21,7 @@ rule all:
 		expand("b2forensics_results/blast_reads_id/{sample}_{strain}_blast_output_uniq.txt",strain=STRAINS,sample=SAMPLES),
 		expand("b2forensics_results/krona_results/{sample}.html",sample=SAMPLES)
 
-# index of ref fasta and silva sequences (subunit ribosomal RNA)
+# index of reference fasta and silva sequences (subunit ribosomal RNA)
 rule bwa_index_ref:
 	input:
 		"reference_genomes/{strain}_genome.fa"
